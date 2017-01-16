@@ -14,6 +14,7 @@ import { pixelsToSeconds, secondsToPixels } from './utils/conversions';
 import LoaderFactory from './track/loader/LoaderFactory';
 
 import ScrollHook from './render/ScrollHook';
+import AnnotationResizeHook from './render/AnnotationResizeHook';
 
 import TimeScale from './TimeScale';
 import Track from './Track';
@@ -847,7 +848,7 @@ export default class {
     const boxes = h('div.annotations-boxes',
       {
         attributes: {
-
+          style: 'height: 30px;',
         }
       },
       this.annotations.map((note) => {
@@ -857,11 +858,12 @@ export default class {
         return h('div.annotation-box',
           {
             attributes: {
-              style: `position: absolute; left: ${left}px; width: ${width}px;`,
+              style: `position: absolute; left: ${left}px; width: ${width}px; height: 30px;`,
               'data-start': note.begin,
               'data-end': note.end,
               'data-id': note.id,
             },
+            hook: new AnnotationResizeHook(this),
           },
           [
             note.id,

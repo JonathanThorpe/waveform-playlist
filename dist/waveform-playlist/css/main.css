@@ -100,6 +100,8 @@
       background: #ccc; }
     .playlist .controls input[type=range]:focus::-moz-range-track {
       background: #ccc; }
+  .playlist .annotations .annotation-box {
+    border: dashed grey; }
 
 .playlist .vocals {
   background-color: #c0dce0; }
