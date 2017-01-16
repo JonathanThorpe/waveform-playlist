@@ -846,10 +846,10 @@ export default class {
     const annotations = h('div.annotations',
       {
         onclick: (e) => {
-          // let node = e.target.closest('.row');
-          // let data = node.dataset;
+          const node = e.target.closest('.row');
+          const data = node.dataset;
 
-          //this.ee.emit('play', Number(data.start), Number(data.end));
+          this.ee.emit('play', Number(data.start), Number(data.end));
         }
       },
       this.annotations.map((note) => {
