@@ -23,7 +23,7 @@ var playlist = WaveformPlaylist.init({
   container: document.getElementById("playlist"),
   timescale: true,
   state: 'select',
-  samplesPerPixel: 512,
+  samplesPerPixel: 1024,
   colors: {
     waveOutlineColor: '#E0EFF1',
     timeColor: 'grey',

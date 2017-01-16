@@ -9,16 +9,19 @@ export default class {
   }
 
   hook(node) {
-    var resizable = new Resizable(node, {
-      within: 'parent',
-      handles: 'w,e',
-      threshold: 10,
-      draggable: false,
-      css3: false,
-    });
-     
-    resizable.on('resize', () => {
-      const data = node.target.dataset;
-    });
+    if (!node.classList.contains('draggy-idle')) {
+      const resizable = new Resizable(node, {
+        within: 'parent',
+        handles: 'w,e',
+        threshold: 10,
+        draggable: false,
+        css3: false,
+      });
+       
+      resizable.on('resize', function () {
+        console.log(this);
+        console.log(this.element.offsetLeft);
+      });
+    }
   }
 }
