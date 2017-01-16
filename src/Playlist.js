@@ -864,6 +864,11 @@ export default class {
               'data-id': note.id,
             },
             hook: new AnnotationResizeHook(this),
+            onclick: (e) => {
+              const data = e.target.dataset;
+
+              this.ee.emit('play', Number(data.start), Number(data.end));
+            },
           },
           [
             note.id,
@@ -873,19 +878,14 @@ export default class {
     );
 
     const text = h('div.annotations-text',
-      {
-        onclick: (e) => {
-          const node = e.target.closest('.row');
-          const data = node.dataset;
-
-          this.ee.emit('play', Number(data.start), Number(data.end));
-        }
-      },
       this.annotations.map((note) => {
-        const duration = moment.duration(Number(note.begin), 'seconds')
+        const start = moment.duration(Number(note.begin), 'seconds')
           .format(this.durationFormat, {trim: false});
 
-        return h('div.row',
+        const end = moment.duration(Number(note.end), 'seconds')
+          .format(this.durationFormat, {trim: false});
+
+        return h('div',
           {
             attributes: {
               'data-start': note.begin,
@@ -894,14 +894,17 @@ export default class {
             },
           },
           [
-            h('col-xs-1.col-sm-1.col-md-1.col-lg-1', [
-              h('div.box', note.id),
+            h('span.annotation.id', [
+              note.id,
             ]),
-            h('col-xs-9.col-sm-9.col-md-9.col-lg-9', [
-              h('div.box', note.lines),
+            h('span.annotation.text', [
+              note.lines,
             ]),
-            h('col-xs-2.col-sm-2.col-md-2.col-lg-2', [
-              h('div.box', duration),
+            h('span.annotation.start', [
+              start,
+            ]),
+            h('span.annotation.end', [
+              end,
             ]),
           ],
         );

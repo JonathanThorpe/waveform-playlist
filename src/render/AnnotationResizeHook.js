@@ -4,8 +4,8 @@ import Resizable from 'resizable';
 * virtual-dom hook for adding npm resizable package behaviour.
 */
 export default class {
-  constructor() {
-
+  constructor(annotations) {
+    this.annotations = annotations;
   }
 
   hook(node) {
@@ -17,8 +17,8 @@ export default class {
       css3: false,
     });
      
-    // resizable.on('resize', function(){
-
-    // });
+    resizable.on('resize', () => {
+      const data = node.target.dataset;
+    });
   }
 }

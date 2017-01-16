@@ -102,6 +102,8 @@
       background: #ccc; }
   .playlist .annotations .annotation-box {
     border: dashed grey; }
+  .playlist .annotations .annotation {
+    padding: 1em; }
 
 .playlist .vocals {
   background-color: #c0dce0; }
