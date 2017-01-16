@@ -9,7 +9,7 @@ import 'moment-duration-format';
 
 import InlineWorker from 'inline-worker';
 
-import { pixelsToSeconds } from './utils/conversions';
+import { pixelsToSeconds, secondsToPixels } from './utils/conversions';
 
 import LoaderFactory from './track/loader/LoaderFactory';
 
@@ -803,11 +803,15 @@ export default class {
     return true;
   }
 
-  render() {
+  renderTimeScale() {
     const controlWidth = this.controls.show ? this.controls.width : 0;
     const timeScale = new TimeScale(this.duration, this.scrollLeft,
       this.samplesPerPixel, this.sampleRate, controlWidth);
 
+    return timeScale.render();
+  }
+
+  renderTrackSection() {
     const trackElements = this.tracks.map(track =>
       track.render(this.getTrackRenderData({
         isActive: this.isActiveTrack(track),
@@ -817,7 +821,7 @@ export default class {
       })),
     );
 
-    const trackSection = h('div.playlist-tracks',
+    return h('div.playlist-tracks',
       {
         attributes: {
           style: 'overflow: auto;',
@@ -834,16 +838,39 @@ export default class {
       },
       trackElements,
     );
+  }
 
-    const containerChildren = [];
+  renderAnnotations() {
+    const pixPerSec = this.sampleRate / this.samplesPerPixel;
+    const pixOffset = secondsToPixels(this.scrollLeft, this.samplesPerPixel, this.sampleRate);
 
-    if (this.showTimescale) {
-      containerChildren.push(timeScale.render());
-    }
+    const boxes = h('div.annotations-boxes',
+      {
+        attributes: {
 
-    containerChildren.push(trackSection);
+        }
+      },
+      this.annotations.map((note) => {
+        const left = Math.floor((note.begin * pixPerSec) - pixOffset);
+        const width = Math.ceil((note.end * pixPerSec) - (note.begin * pixPerSec));
 
-    const annotations = h('div.annotations',
+        return h('div.annotation-box',
+          {
+            attributes: {
+              style: `position: absolute; left: ${left}px; width: ${width}px;`,
+              'data-start': note.begin,
+              'data-end': note.end,
+              'data-id': note.id,
+            },
+          },
+          [
+            note.id,
+          ],
+        );
+      })
+    );
+
+    const text = h('div.annotations-text',
       {
         onclick: (e) => {
           const node = e.target.closest('.row');
@@ -861,6 +888,7 @@ export default class {
             attributes: {
               'data-start': note.begin,
               'data-end': note.end,
+              'data-id': note.id,
             },
           },
           [
@@ -878,7 +906,27 @@ export default class {
       })
     );
 
-    containerChildren.push(annotations);
+    return h('div.annotations',
+      {
+        attributes: {
+        },
+      },
+      [
+        boxes,
+        text,
+      ],
+    );
+  }
+
+  render() {
+    const containerChildren = [];
+
+    if (this.showTimescale) {
+      containerChildren.push(this.renderTimeScale());
+    }
+
+    containerChildren.push(this.renderTrackSection());
+    containerChildren.push(this.renderAnnotations());
 
     return h('div.playlist',
       {
