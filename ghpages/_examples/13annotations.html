@@ -1,0 +1,34 @@
+---
+layout: page
+title: Playlist Annotations
+lead: Annotate the playlist with text segments.
+excerpt: Annotate the playlist with text segments.
+permalink: annotations.html
+javascript: annotations.js
+---
+
+<div id="top-bar" class="playlist-top-bar">
+  <div class="playlist-toolbar">
+    <div class="btn-group">
+      <span class="btn-pause btn btn-warning"><i class="fa fa-pause"></i></span>
+      <span class="btn-play btn btn-success"><i class="fa fa-play"></i></span>
+      <span class="btn-stop btn btn-danger"><i class="fa fa-stop"></i></span>
+      <span class="btn-rewind btn btn-success"><i class="fa fa-fast-backward"></i></span>
+      <span class="btn-fast-forward btn btn-success"><i class="fa fa-fast-forward"></i></span>
+    </div>
+  </div>
+  <form class="form-inline">
+    <select class="time-format form-control">
+      <option value="seconds">seconds</option>
+      <option value="thousandths">thousandths</option>
+      <option value="hh:mm:ss">hh:mm:ss</option>
+      <option value="hh:mm:ss.u">hh:mm:ss + tenths</option>
+      <option value="hh:mm:ss.uu">hh:mm:ss + hundredths</option>
+      <option value="hh:mm:ss.uuu">hh:mm:ss + milliseconds</option>
+    </select>
+    <input type="text" class="audio-start input-small form-control">
+    <input type="text" class="audio-end form-control">
+    <label class="audio-pos">00:00:00.0</label>
+  </form>
+</div>
+<div id="playlist"></div>

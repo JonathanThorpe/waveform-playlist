@@ -4,6 +4,9 @@ import h from 'virtual-dom/h';
 import diff from 'virtual-dom/diff';
 import patch from 'virtual-dom/patch';
 
+import moment from 'moment';
+import 'moment-duration-format';
+
 import InlineWorker from 'inline-worker';
 
 import { pixelsToSeconds } from './utils/conversions';
@@ -34,6 +37,8 @@ export default class {
 
     this.fadeType = 'logarithmic';
     this.masterGain = 1;
+    this.annotations = [];
+    this.durationFormat = 'h:mm:ss.SSS';
   }
 
   // TODO extract into a plugin
@@ -129,6 +134,10 @@ export default class {
 
   setColors(colors) {
     this.colors = colors;
+  }
+
+  setAnnotations(annotations) {
+    this.annotations = annotations;
   }
 
   setEventEmitter(ee) {
@@ -833,6 +842,43 @@ export default class {
     }
 
     containerChildren.push(trackSection);
+
+    const annotations = h('div.annotations',
+      {
+        onclick: (e) => {
+          // let node = e.target.closest('.row');
+          // let data = node.dataset;
+
+          //this.ee.emit('play', Number(data.start), Number(data.end));
+        }
+      },
+      this.annotations.map((note) => {
+        const duration = moment.duration(Number(note.begin), 'seconds')
+          .format(this.durationFormat, {trim: false});
+
+        return h('div.row',
+          {
+            attributes: {
+              'data-start': note.begin,
+              'data-end': note.end,
+            },
+          },
+          [
+            h('col-xs-1.col-sm-1.col-md-1.col-lg-1', [
+              h('div.box', note.id),
+            ]),
+            h('col-xs-9.col-sm-9.col-md-9.col-lg-9', [
+              h('div.box', note.lines),
+            ]),
+            h('col-xs-2.col-sm-2.col-md-2.col-lg-2', [
+              h('div.box', duration),
+            ]),
+          ],
+        );
+      })
+    );
+
+    containerChildren.push(annotations);
 
     return h('div.playlist',
       {

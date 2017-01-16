@@ -61,6 +61,7 @@ export function init(options = {}, ee = EventEmitter()) {
   playlist.setExclSolo(config.exclSolo);
   playlist.setShowTimeScale(config.timescale);
   playlist.setSeekStyle(config.seekStyle);
+  playlist.setAnnotations(config.annotations);
 
   // take care of initial virtual dom rendering.
   const tree = playlist.render();
