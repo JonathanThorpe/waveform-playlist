@@ -885,7 +885,15 @@ export default class {
         const end = moment.duration(Number(note.end), 'seconds')
           .format(this.durationFormat, {trim: false});
 
-        return h('div',
+
+        let segmentClass = '';
+        if (this.isPlaying() &&
+          (this.playbackSeconds >= note.begin) &&
+          (this.playbackSeconds <= note.end)) {
+          segmentClass = 'current';
+        }
+
+        return h(`div.${segmentClass}`,
           {
             attributes: {
               'data-start': note.begin,

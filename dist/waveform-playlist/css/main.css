@@ -104,6 +104,8 @@
     border: dashed grey; }
   .playlist .annotations .annotation {
     padding: 1em; }
+  .playlist .annotations .current {
+    background-color: yellow; }
 
 .playlist .vocals {
   background-color: #c0dce0; }

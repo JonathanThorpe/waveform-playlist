@@ -158,13 +158,16 @@
   }
 
   .annotations {
-
     .annotation-box {
       border: dashed grey;
     }
 
     .annotation {
       padding: 1em;
+    }
+
+    .current {
+      background-color: yellow;
     }
   }
 }
