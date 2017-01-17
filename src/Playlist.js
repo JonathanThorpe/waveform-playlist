@@ -852,7 +852,7 @@ export default class {
           style: `height: 30px; width: ${durationWidth}px;`,
         },
       },
-      this.annotations.map((note) => {
+      this.annotations.map((note, i) => {
         const left = Math.floor((note.begin * pixPerSec) - pixOffset);
         const width = Math.ceil((note.end * pixPerSec) - (note.begin * pixPerSec));
 
@@ -868,8 +868,7 @@ export default class {
                 return;
               }
 
-              const data = e.target.dataset;
-              this.ee.emit('play', Number(data.start), Number(data.end));
+              this.ee.emit('play', Number(this.annotations[i].begin), Number(this.annotations[i].end));
             },
           },
           [

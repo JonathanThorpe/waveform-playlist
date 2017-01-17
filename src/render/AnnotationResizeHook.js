@@ -63,8 +63,10 @@ export default class {
 
       resizableMap.set(node, resizable);
     } else {
-      const resizable = resizableMap.get(node);
-      resizable.draggable.move(this.left);
+      window.requestAnimationFrame(() => {
+        const resizable = resizableMap.get(node);
+        resizable.draggable.move(this.left);
+      });
     }
   }
 
