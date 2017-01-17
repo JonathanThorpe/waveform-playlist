@@ -865,8 +865,11 @@ export default class {
             },
             hook: new AnnotationResizeHook(this, left, width),
             onclick: (e) => {
-              const data = e.target.dataset;
+              if (e.target.classList.contains('resizable-handle')) {
+                return;
+              }
 
+              const data = e.target.dataset;
               this.ee.emit('play', Number(data.start), Number(data.end));
             },
           },

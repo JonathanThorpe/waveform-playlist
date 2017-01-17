@@ -26,7 +26,7 @@ export default class {
       const resizable = new Resizable(node, {
         within: 'parent',
         handles: 'w,e',
-        threshold: 10,
+        threshold: 1,
         draggable: false,
         css3: false,
       });
