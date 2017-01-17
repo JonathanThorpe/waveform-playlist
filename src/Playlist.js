@@ -860,8 +860,6 @@ export default class {
           {
             attributes: {
               style: 'position: absolute; height: 30px;',
-              'data-start': note.begin,
-              'data-end': note.end,
               'data-id': note.id,
             },
             hook: new AnnotationResizeHook(this, left, width),
