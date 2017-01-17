@@ -2,6 +2,8 @@ import Resizable from 'resizable';
 import css from 'mucss';
 import { pixelsToSeconds } from '../utils/conversions';
 
+const resizableMap = new WeakMap();
+
 /*
 * virtual-dom hook for adding npm resizable package behaviour.
 */
@@ -16,10 +18,9 @@ export default class {
 
   init(node) {
     if (!node.classList.contains('draggy-idle')) {
-      // only set the calculate left/width on first render.
+      // only set the calculated width on first render.
       // Otherwise let the resizable take care of this.
       css(node, {
-        left: `${this.left}px`,
         width: `${this.width}px`,
       });
 
@@ -27,11 +28,10 @@ export default class {
         within: 'parent',
         handles: 'w,e',
         threshold: 1,
-        draggable: false,
-        css3: false,
+        draggable: false
       });
 
-      node.dataset.resizable = resizable;
+      resizable.draggable.move(this.left);
 
       const annotationIndex = this.annotations.findIndex((el) => {
         return el.id === node.dataset.id;
@@ -60,6 +60,11 @@ export default class {
 
         playlist.draw(playlist.render());
       });
+
+      resizableMap.set(node, resizable);
+    } else {
+      const resizable = resizableMap.get(node);
+      resizable.draggable.move(this.left);
     }
   }
 

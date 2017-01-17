@@ -835,7 +835,7 @@ export default class {
           );
           this.ee.emit('scroll', this.scrollLeft);
         },
-        hook: new ScrollHook(this, this.samplesPerPixel, this.sampleRate),
+        hook: new ScrollHook(this),
       },
       trackElements,
     );
@@ -850,7 +850,7 @@ export default class {
       {
         attributes: {
           style: `height: 30px; width: ${durationWidth}px;`,
-        }
+        },
       },
       this.annotations.map((note) => {
         const left = Math.floor((note.begin * pixPerSec) - pixOffset);
@@ -879,6 +879,18 @@ export default class {
           ],
         );
       })
+    );
+
+    const boxesWrapper = h('div.annotations-boxes-wrapper',
+      {
+        attributes: {
+          style: 'overflow: hidden;',
+        },
+        hook: new ScrollHook(this),
+      },
+      [
+        boxes,
+      ],
     );
 
     const text = h('div.annotations-text',
@@ -929,7 +941,7 @@ export default class {
         },
       },
       [
-        boxes,
+        boxesWrapper,
         text,
       ],
     );
