@@ -704,7 +704,9 @@ export default class {
 
   startAnimation(startTime) {
     this.lastDraw = this.ac.currentTime;
-    this.animationRequest = window.requestAnimationFrame(this.updateEditor.bind(this, startTime));
+    this.animationRequest = window.requestAnimationFrame((ts) => {
+      this.updateEditor(startTime)
+    });
   }
 
   stopAnimation() {
@@ -730,8 +732,10 @@ export default class {
 
   /*
   * Animation function for the playlist.
+  * TODO 16.7 milliseconds based on a typical screen refresh rate of 60fps.
   */
   updateEditor(cursor) {
+    console.time('updateeditor');
     const currentTime = this.ac.currentTime;
     let playbackSeconds = 0;
     const selection = this.getTimeSelection();
@@ -742,9 +746,10 @@ export default class {
     if (this.isPlaying()) {
       playbackSeconds = cursorPos + elapsed;
       this.ee.emit('timeupdate', playbackSeconds);
-      this.animationRequest = window.requestAnimationFrame(
-        this.updateEditor.bind(this, playbackSeconds),
-      );
+      this.animationRequest = window.requestAnimationFrame((ts) => {
+        console.log(ts);
+        this.updateEditor(playbackSeconds);
+      });
     } else {
       if ((cursorPos + elapsed) >=
         (this.isSegmentSelection()) ? selection.end : this.duration) {
@@ -761,21 +766,20 @@ export default class {
 
     this.draw(this.render());
     this.lastDraw = currentTime;
+    console.timeEnd('updateeditor');
   }
 
   draw(newTree) {
-    window.requestAnimationFrame(() => {
-      const patches = diff(this.tree, newTree);
-      this.rootNode = patch(this.rootNode, patches);
-      this.tree = newTree;
+    const patches = diff(this.tree, newTree);
+    this.rootNode = patch(this.rootNode, patches);
+    this.tree = newTree;
 
-      // use for fast forwarding.
-      this.viewDuration = pixelsToSeconds(
-        this.rootNode.clientWidth - this.controls.width,
-        this.samplesPerPixel,
-        this.sampleRate,
-      );
-    });
+    // use for fast forwarding.
+    this.viewDuration = pixelsToSeconds(
+      this.rootNode.clientWidth - this.controls.width,
+      this.samplesPerPixel,
+      this.sampleRate,
+    );
   }
 
   getTrackRenderData(data = {}) {
