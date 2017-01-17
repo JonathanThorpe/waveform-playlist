@@ -858,12 +858,12 @@ export default class {
         return h('div.annotation-box',
           {
             attributes: {
-              style: `position: absolute; left: ${left}px; width: ${width}px; height: 30px;`,
+              style: 'position: absolute; height: 30px;',
               'data-start': note.begin,
               'data-end': note.end,
               'data-id': note.id,
             },
-            hook: new AnnotationResizeHook(this.annotations, this.samplesPerPixel, this.sampleRate),
+            hook: new AnnotationResizeHook(this, left, width),
             onclick: (e) => {
               const data = e.target.dataset;
 
