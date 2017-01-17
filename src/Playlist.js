@@ -863,7 +863,7 @@ export default class {
               'data-end': note.end,
               'data-id': note.id,
             },
-            hook: new AnnotationResizeHook(this),
+            hook: new AnnotationResizeHook(this.annotations, this.samplesPerPixel, this.sampleRate),
             onclick: (e) => {
               const data = e.target.dataset;
 
