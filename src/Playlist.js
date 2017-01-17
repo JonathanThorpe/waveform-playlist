@@ -844,11 +844,12 @@ export default class {
   renderAnnotations() {
     const pixPerSec = this.sampleRate / this.samplesPerPixel;
     const pixOffset = secondsToPixels(this.scrollLeft, this.samplesPerPixel, this.sampleRate);
+    const durationWidth = secondsToPixels(this.duration, this.samplesPerPixel, this.sampleRate);
 
     const boxes = h('div.annotations-boxes',
       {
         attributes: {
-          style: 'height: 30px;',
+          style: `height: 30px; width: ${durationWidth}px;`,
         }
       },
       this.annotations.map((note) => {

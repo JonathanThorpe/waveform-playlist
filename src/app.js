@@ -35,6 +35,7 @@ export function init(options = {}, ee = EventEmitter()) {
     waveHeight: 128,
     state: 'cursor',
     zoomLevels: [512, 1024, 2048, 4096],
+    annotations: [],
   };
 
   const config = _assign(defaults, options);
