@@ -85,7 +85,7 @@ export default class {
     // use a worker for calculating recording peaks.
     this.recorderWorker.onmessage = (e) => {
       this.recordingTrack.setPeaks(e.data);
-      this.draw(this.render());
+      this.drawRequest();
     };
 
     this.recorderWorker.onerror = (e) => {
@@ -161,7 +161,7 @@ export default class {
         // reset if it was paused.
         this.seek(start, end, track);
         this.ee.emit('timeupdate', start);
-        this.draw(this.render());
+        this.drawRequest();
       }
     });
 
@@ -171,13 +171,13 @@ export default class {
 
     ee.on('statechange', (state) => {
       this.setState(state);
-      this.draw(this.render());
+      this.drawRequest();
     });
 
     ee.on('shift', (deltaTime, track) => {
       track.setStartTime(track.getStartTime() + deltaTime);
       this.adjustDuration();
-      this.draw(this.render());
+      this.drawRequest();
     });
 
     ee.on('record', () => {
@@ -206,20 +206,20 @@ export default class {
 
     ee.on('clear', () => {
       this.clear().then(() => {
-        this.draw(this.render());
+        this.drawRequest();
       });
     });
 
     ee.on('solo', (track) => {
       this.soloTrack(track);
       this.adjustTrackPlayout();
-      this.draw(this.render());
+      this.drawRequest();
     });
 
     ee.on('mute', (track) => {
       this.muteTrack(track);
       this.adjustTrackPlayout();
-      this.draw(this.render());
+      this.drawRequest();
     });
 
     ee.on('volumechange', (volume, track) => {
@@ -235,12 +235,12 @@ export default class {
 
     ee.on('fadein', (duration, track) => {
       track.setFadeIn(duration, this.fadeType);
-      this.draw(this.render());
+      this.drawRequest();
     });
 
     ee.on('fadeout', (duration, track) => {
       track.setFadeOut(duration, this.fadeType);
-      this.draw(this.render());
+      this.drawRequest();
     });
 
     ee.on('fadetype', (type) => {
@@ -262,7 +262,7 @@ export default class {
       track.calculatePeaks(this.samplesPerPixel, this.sampleRate);
 
       this.setTimeSelection(0, 0);
-      this.draw(this.render());
+      this.drawRequest();
     });
 
     ee.on('zoomin', () => {
@@ -271,7 +271,7 @@ export default class {
 
       if (zoom !== this.samplesPerPixel) {
         this.setZoom(zoom);
-        this.draw(this.render());
+        this.drawRequest();
       }
     });
 
@@ -281,12 +281,12 @@ export default class {
 
       if (zoom !== this.samplesPerPixel) {
         this.setZoom(zoom);
-        this.draw(this.render());
+        this.drawRequest();
       }
     });
 
     ee.on('scroll', () => {
-      this.draw(this.render());
+      this.drawRequest();
     });
   }
 
@@ -649,7 +649,7 @@ export default class {
       track.setState(this.getState());
     });
 
-    this.draw(this.render());
+    this.drawRequest();
     return Promise.all(this.playoutPromises);
   }
 
@@ -704,7 +704,7 @@ export default class {
 
   startAnimation(startTime) {
     this.lastDraw = this.ac.currentTime;
-    this.animationRequest = window.requestAnimationFrame((ts) => {
+    this.animationRequest = window.requestAnimationFrame(() => {
       this.updateEditor(startTime)
     });
   }
@@ -732,10 +732,9 @@ export default class {
 
   /*
   * Animation function for the playlist.
-  * TODO 16.7 milliseconds based on a typical screen refresh rate of 60fps.
+  * Keep under 16.7 milliseconds based on a typical screen refresh rate of 60fps.
   */
   updateEditor(cursor) {
-    console.time('updateeditor');
     const currentTime = this.ac.currentTime;
     let playbackSeconds = 0;
     const selection = this.getTimeSelection();
@@ -746,8 +745,7 @@ export default class {
     if (this.isPlaying()) {
       playbackSeconds = cursorPos + elapsed;
       this.ee.emit('timeupdate', playbackSeconds);
-      this.animationRequest = window.requestAnimationFrame((ts) => {
-        console.log(ts);
+      this.animationRequest = window.requestAnimationFrame(() => {
         this.updateEditor(playbackSeconds);
       });
     } else {
@@ -766,7 +764,12 @@ export default class {
 
     this.draw(this.render());
     this.lastDraw = currentTime;
-    console.timeEnd('updateeditor');
+  }
+
+  drawRequest() {
+    window.requestAnimationFrame(() => {
+      this.draw(this.render());
+    });
   }
 
   draw(newTree) {

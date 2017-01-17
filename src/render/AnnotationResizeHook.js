@@ -16,7 +16,7 @@ export default class {
     this.width = width;
   }
 
-  init(node) {
+  hook(node) {
     if (!node.classList.contains('draggy-idle')) {
       // only set the calculated width on first render.
       // Otherwise let the resizable take care of this.
@@ -66,13 +66,5 @@ export default class {
       const resizable = resizableMap.get(node);
       resizable.draggable.move(this.left);
     }
-  }
-
-  hook(node) {
-    // timeout is used so resizeable isn't called before node is rendered.
-    // no better workaround with hooks currently in virtual-dom.
-    setTimeout(() => {
-      this.init(node);
-    }, 0);
   }
 }
