@@ -10,10 +10,12 @@ export default class {
 
   hook(node) {
     const el = node;
-    el.scrollLeft = secondsToPixels(
+    const left = secondsToPixels(
         this.playlist.scrollLeft,
         this.playlist.samplesPerPixel,
         this.playlist.sampleRate
     );
+
+    el.scrollLeft = left;
   }
 }

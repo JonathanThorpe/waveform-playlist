@@ -840,7 +840,10 @@ export default class {
             this.samplesPerPixel,
             this.sampleRate,
           );
-          this.ee.emit('scroll', this.scrollLeft);
+          
+          setTimeout(() => {
+            this.ee.emit('scroll', this.scrollLeft);
+          }, 0);
         },
         hook: new ScrollHook(this),
       },
@@ -851,12 +854,11 @@ export default class {
   renderAnnotations() {
     const pixPerSec = this.sampleRate / this.samplesPerPixel;
     const pixOffset = secondsToPixels(this.scrollLeft, this.samplesPerPixel, this.sampleRate);
-    const durationWidth = secondsToPixels(this.duration, this.samplesPerPixel, this.sampleRate);
 
     const boxes = h('div.annotations-boxes',
       {
         attributes: {
-          style: `height: 30px; width: ${durationWidth}px;`,
+          style: `height: 30px;`,
         },
       },
       this.annotations.map((note, i) => {
@@ -889,8 +891,7 @@ export default class {
       {
         attributes: {
           style: 'overflow: hidden;',
-        },
-        hook: new ScrollHook(this),
+        }
       },
       [
         boxes,
@@ -914,13 +915,6 @@ export default class {
         }
 
         return h(`div.${segmentClass}`,
-          {
-            attributes: {
-              'data-start': note.begin,
-              'data-end': note.end,
-              'data-id': note.id,
-            },
-          },
           [
             h('span.annotation.id', [
               note.id,
@@ -940,10 +934,6 @@ export default class {
     );
 
     return h('div.annotations',
-      {
-        attributes: {
-        },
-      },
       [
         boxesWrapper,
         text,
