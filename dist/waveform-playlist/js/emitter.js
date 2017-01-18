@@ -9,7 +9,7 @@ var $audioStart = $container.find('.audio-start');
 var $audioEnd = $container.find('.audio-end');
 var $time = $container.find('.audio-pos');
 
-var format = "seconds";
+var format = "thousandths";
 var startTime = 0;
 var endTime = 0;
 var audioPos = 0;

@@ -9,13 +9,15 @@ export default class {
   }
 
   hook(node) {
-    const el = node;
-    const left = secondsToPixels(
-        this.playlist.scrollLeft,
-        this.playlist.samplesPerPixel,
-        this.playlist.sampleRate
-    );
+    if (!this.playlist.isScrolling) {
+      const el = node;
+      const left = secondsToPixels(
+          this.playlist.scrollLeft,
+          this.playlist.samplesPerPixel,
+          this.playlist.sampleRate
+      );
 
-    el.scrollLeft = left;
+      el.scrollLeft = left;
+    }
   }
 }

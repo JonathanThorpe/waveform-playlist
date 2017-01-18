@@ -34,6 +34,7 @@ export default class {
     this.playbackSeconds = 0;
     this.duration = 0;
     this.scrollLeft = 0;
+    this.scrollTimer = undefined;
     this.showTimescale = false;
 
     this.fadeType = 'logarithmic';
@@ -286,7 +287,12 @@ export default class {
     });
 
     ee.on('scroll', () => {
+      this.isScrolling = true;
       this.drawRequest();
+      clearTimeout(this.scrollTimer);
+      this.scrollTimer = setTimeout(() => {
+        this.isScrolling = false;
+      }, 200);
     });
   }
 
@@ -840,10 +846,8 @@ export default class {
             this.samplesPerPixel,
             this.sampleRate,
           );
-          
-          setTimeout(() => {
-            this.ee.emit('scroll', this.scrollLeft);
-          }, 0);
+
+          this.ee.emit('scroll', this.scrollLeft);
         },
         hook: new ScrollHook(this),
       },
