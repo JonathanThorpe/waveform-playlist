@@ -101,7 +101,11 @@
     .playlist .controls input[type=range]:focus::-moz-range-track {
       background: #ccc; }
   .playlist .annotations .annotation-box {
-    border: dashed grey; }
+    border: 2px dashed grey;
+    padding: 0 10px; }
+    .playlist .annotations .annotation-box .resizable-handle {
+      background: grey;
+      opacity: 0.3; }
   .playlist .annotations .annotation {
     padding: 1em; }
   .playlist .annotations .current {
