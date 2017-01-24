@@ -172,8 +172,14 @@
       padding: 1em;
     }
 
+    .annotations-text {
+      font-size: 19px;
+      font-weight: 300;
+      margin-top: 1em;
+    }
+
     .current {
-      background-color: yellow;
+      background-color: #EBF4F6;
     }
   }
 }

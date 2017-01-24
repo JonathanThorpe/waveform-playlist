@@ -108,8 +108,12 @@
       opacity: 0.3; }
   .playlist .annotations .annotation {
     padding: 1em; }
+  .playlist .annotations .annotations-text {
+    font-size: 19px;
+    font-weight: 300;
+    margin-top: 1em; }
   .playlist .annotations .current {
-    background-color: yellow; }
+    background-color: #EBF4F6; }
 
 .playlist .vocals {
   background-color: #c0dce0; }

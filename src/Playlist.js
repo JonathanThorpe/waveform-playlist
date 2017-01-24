@@ -918,7 +918,7 @@ export default class {
           segmentClass = 'current';
         }
 
-        return h(`div.${segmentClass}`,
+        return h(`div.row.${segmentClass}`,
           [
             h('span.annotation.id', [
               note.id,
