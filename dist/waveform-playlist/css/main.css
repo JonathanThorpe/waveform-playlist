@@ -106,6 +106,8 @@
     .playlist .annotations .annotation-box .resizable-handle {
       background: grey;
       opacity: 0.3; }
+    .playlist .annotations .annotation-box .id {
+      cursor: pointer; }
   .playlist .annotations .annotation {
     padding: 1em; }
   .playlist .annotations .annotations-text {

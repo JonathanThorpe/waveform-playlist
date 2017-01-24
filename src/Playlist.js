@@ -885,7 +885,9 @@ export default class {
             },
           },
           [
-            note.id,
+            h('span.id', [
+              note.id,
+            ]),
           ],
         );
       })
