@@ -18,11 +18,6 @@ export default class {
 
   hook(node) {
     if (!node.classList.contains('draggy-idle')) {
-      // only set the calculated width on first render.
-      // Otherwise let the resizable take care of this.
-      css(node, {
-        width: `${this.width}px`,
-      });
 
       const resizable = new Resizable(node, {
         within: 'parent',
@@ -30,8 +25,6 @@ export default class {
         threshold: 1,
         draggable: false
       });
-
-      resizable.draggable.move(this.left);
 
       const annotationIndex = this.annotations.findIndex((el) => {
         return el.id === node.dataset.id;
@@ -51,17 +44,29 @@ export default class {
         if (this.draggable.deltaX) {
           const begin = Number(annotation.begin) + (secondsPerPixel * this.draggable.deltaX);
           hook.annotations[annotationIndex] = Object.assign({}, annotation, {begin});
+
+          if (annotationIndex && (hook.annotations[annotationIndex - 1].end > begin)) {
+            const leftNeighbour = hook.annotations[annotationIndex - 1];
+            hook.annotations[annotationIndex - 1] = Object.assign({}, leftNeighbour, {end: begin});
+          }
         }
+        // resizing to the right
         else {
           const width = css.parseValue(this.element.style.width);
           const end = Number(annotation.begin) + (secondsPerPixel * width);
           hook.annotations[annotationIndex] = Object.assign({}, annotation, {end});
+
+          if (annotationIndex < (hook.annotations.length - 1) && (hook.annotations[annotationIndex + 1].begin < end)) {
+            const rightNeighbour = hook.annotations[annotationIndex + 1];
+            hook.annotations[annotationIndex + 1] = Object.assign({}, rightNeighbour, {begin: end});
+          }
         }
 
         playlist.draw(playlist.render());
       });
 
       resizableMap.set(node, resizable);
+      resizable.draggable.move(this.left);
     } else {
       const resizable = resizableMap.get(node);
       resizable.draggable.move(this.left);

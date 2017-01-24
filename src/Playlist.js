@@ -872,7 +872,7 @@ export default class {
         return h('div.annotation-box',
           {
             attributes: {
-              style: 'position: absolute; height: 30px;',
+              style: `position: absolute; height: 30px; width: ${width}px`,
               'data-id': note.id,
             },
             hook: new AnnotationResizeHook(this, left, width),
