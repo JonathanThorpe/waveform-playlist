@@ -8,12 +8,11 @@ const resizableMap = new WeakMap();
 * virtual-dom hook for adding npm resizable package behaviour.
 */
 export default class {
-  constructor(playlist, left, width) {
+  constructor(playlist, left) {
     this.annotations = playlist.annotations;
     this.samplesPerPixel = playlist.samplesPerPixel;
     this.sampleRate = playlist.sampleRate;
     this.left = left;
-    this.width = width;
   }
 
   hook(node) {

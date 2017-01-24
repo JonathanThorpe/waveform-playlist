@@ -875,7 +875,7 @@ export default class {
               style: `position: absolute; height: 30px; width: ${width}px`,
               'data-id': note.id,
             },
-            hook: new AnnotationResizeHook(this, left, width),
+            hook: new AnnotationResizeHook(this, left),
             onclick: (e) => {
               if (e.target.classList.contains('resizable-handle')) {
                 return;
