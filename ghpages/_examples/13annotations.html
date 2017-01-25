@@ -16,8 +16,14 @@ javascript: annotations.js
       <span class="btn-rewind btn btn-success"><i class="fa fa-fast-backward"></i></span>
       <span class="btn-fast-forward btn btn-success"><i class="fa fa-fast-forward"></i></span>
     </div>
+    <div class="btn-group">
+      <span title="zoom in" class="btn-zoom-in btn btn-default"><i class="fa fa-search-plus"></i></span>
+      <span title="zoom out" class="btn-zoom-out btn btn-default"><i class="fa fa-search-minus"></i></span>
+    </div>
   </div>
   <form class="form-inline">
+    <label>Master Volume: <input type="range" min="0" max="100" value="100"
+      class="master-gain input-small form-control"></label>
     <select class="time-format form-control">
       <option value="seconds">seconds</option>
       <option value="thousandths">thousandths</option>

@@ -162,9 +162,17 @@
       border: 2px dashed grey;
       padding: 0 10px;
 
-      .resizable-handle {
+      .resize-handle {
         background: grey;
         opacity: 0.3;
+      }
+
+      .resize-w {
+        cursor: w-resize;
+      }
+
+      .resize-e {
+        cursor: e-resize;
       }
 
       .id {

@@ -36,11 +36,15 @@ export default class {
     this.scrollLeft = 0;
     this.scrollTimer = undefined;
     this.showTimescale = false;
+    // whether a user is scrolling the waveform
+    this.isScrolling = false;
 
     this.fadeType = 'logarithmic';
     this.masterGain = 1;
     this.annotations = [];
     this.durationFormat = 'h:mm:ss.SSS';
+    this.isAutomaticScroll = false;
+    this.isContinuousPlay = false;
   }
 
   // TODO extract into a plugin
@@ -856,9 +860,6 @@ export default class {
   }
 
   renderAnnotations() {
-    const pixPerSec = this.sampleRate / this.samplesPerPixel;
-    const pixOffset = secondsToPixels(this.scrollLeft, this.samplesPerPixel, this.sampleRate);
-
     const boxes = h('div.annotations-boxes',
       {
         attributes: {
@@ -866,28 +867,43 @@ export default class {
         },
       },
       this.annotations.map((note, i) => {
+        const samplesPerPixel = this.samplesPerPixel;
+        const sampleRate = this.sampleRate;
+        const pixPerSec = sampleRate / samplesPerPixel;
+        const pixOffset = secondsToPixels(this.scrollLeft, samplesPerPixel, sampleRate);
+        const secondsPerPixel = pixelsToSeconds(
+          1,
+          samplesPerPixel,
+          sampleRate,
+        );
+
         const left = Math.floor((note.begin * pixPerSec) - pixOffset);
         const width = Math.ceil((note.end * pixPerSec) - (note.begin * pixPerSec));
 
         return h('div.annotation-box',
           {
             attributes: {
-              style: `position: absolute; height: 30px; width: ${width}px`,
+              style: `position: absolute; height: 30px; width: ${width}px; left: ${left}px`,
               'data-id': note.id,
             },
-            hook: new AnnotationResizeHook(this, left),
             onclick: (e) => {
-              if (e.target.classList.contains('resizable-handle')) {
-                return;
+              if (this.isContinuousPlay) {
+                this.ee.emit('play', Number(this.annotations[i].begin));
+              } else {
+                this.ee.emit('play', Number(this.annotations[i].begin), Number(this.annotations[i].end));
               }
-
-              this.ee.emit('play', Number(this.annotations[i].begin), Number(this.annotations[i].end));
             },
           },
           [
+            h('div.resize-handle.resize-w', {attributes: {
+              style: 'position: absolute; height: 30px; width: 10px; top: 0; left: -2px',
+            }}),
             h('span.id', [
               note.id,
             ]),
+            h('div.resize-handle.resize-e', {attributes: {
+              style: 'position: absolute; height: 30px; width: 10px; top: 0; right: -2px',
+            }}),
           ],
         );
       })

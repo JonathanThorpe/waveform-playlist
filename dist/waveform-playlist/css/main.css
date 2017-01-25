@@ -103,9 +103,13 @@
   .playlist .annotations .annotation-box {
     border: 2px dashed grey;
     padding: 0 10px; }
-    .playlist .annotations .annotation-box .resizable-handle {
+    .playlist .annotations .annotation-box .resize-handle {
       background: grey;
       opacity: 0.3; }
+    .playlist .annotations .annotation-box .resize-w {
+      cursor: w-resize; }
+    .playlist .annotations .annotation-box .resize-e {
+      cursor: e-resize; }
     .playlist .annotations .annotation-box .id {
       cursor: pointer; }
   .playlist .annotations .annotation {
