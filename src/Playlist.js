@@ -9,16 +9,16 @@ import 'moment-duration-format';
 
 import InlineWorker from 'inline-worker';
 
-import { pixelsToSeconds, secondsToPixels } from './utils/conversions';
+import { pixelsToSeconds } from './utils/conversions';
 
 import LoaderFactory from './track/loader/LoaderFactory';
 
 import ScrollHook from './render/ScrollHook';
-import AnnotationResizeHook from './render/AnnotationResizeHook';
 
 import TimeScale from './TimeScale';
 import Track from './Track';
 import Playout from './Playout';
+import AnnotationList from './annotation/AnnotationList';
 
 import RecorderWorkerFunction from './utils/recorderWorker';
 import ExportWavWorkerFunction from './utils/exportWavWorker';
@@ -44,7 +44,6 @@ export default class {
     this.annotations = [];
     this.durationFormat = 'h:mm:ss.SSS';
     this.isAutomaticScroll = false;
-    this.isContinuousPlay = false;
   }
 
   // TODO extract into a plugin
@@ -144,6 +143,7 @@ export default class {
 
   setAnnotations(annotations) {
     this.annotations = annotations;
+    this.annotationList = new AnnotationList(this);
   }
 
   setEventEmitter(ee) {
@@ -821,6 +821,10 @@ export default class {
     return true;
   }
 
+  renderAnnotations() {
+    return this.annotationList.render();
+  }
+
   renderTimeScale() {
     const controlWidth = this.controls.show ? this.controls.width : 0;
     const timeScale = new TimeScale(this.duration, this.scrollLeft,
@@ -856,110 +860,6 @@ export default class {
         hook: new ScrollHook(this),
       },
       trackElements,
-    );
-  }
-
-  renderAnnotations() {
-    const boxes = h('div.annotations-boxes',
-      {
-        attributes: {
-          style: `height: 30px;`,
-        },
-      },
-      this.annotations.map((note, i) => {
-        const samplesPerPixel = this.samplesPerPixel;
-        const sampleRate = this.sampleRate;
-        const pixPerSec = sampleRate / samplesPerPixel;
-        const pixOffset = secondsToPixels(this.scrollLeft, samplesPerPixel, sampleRate);
-        const secondsPerPixel = pixelsToSeconds(
-          1,
-          samplesPerPixel,
-          sampleRate,
-        );
-
-        const left = Math.floor((note.begin * pixPerSec) - pixOffset);
-        const width = Math.ceil((note.end * pixPerSec) - (note.begin * pixPerSec));
-
-        return h('div.annotation-box',
-          {
-            attributes: {
-              style: `position: absolute; height: 30px; width: ${width}px; left: ${left}px`,
-              'data-id': note.id,
-            },
-            onclick: (e) => {
-              if (this.isContinuousPlay) {
-                this.ee.emit('play', Number(this.annotations[i].begin));
-              } else {
-                this.ee.emit('play', Number(this.annotations[i].begin), Number(this.annotations[i].end));
-              }
-            },
-          },
-          [
-            h('div.resize-handle.resize-w', {attributes: {
-              style: 'position: absolute; height: 30px; width: 10px; top: 0; left: -2px',
-            }}),
-            h('span.id', [
-              note.id,
-            ]),
-            h('div.resize-handle.resize-e', {attributes: {
-              style: 'position: absolute; height: 30px; width: 10px; top: 0; right: -2px',
-            }}),
-          ],
-        );
-      })
-    );
-
-    const boxesWrapper = h('div.annotations-boxes-wrapper',
-      {
-        attributes: {
-          style: 'overflow: hidden;',
-        }
-      },
-      [
-        boxes,
-      ],
-    );
-
-    const text = h('div.annotations-text',
-      this.annotations.map((note) => {
-        const start = moment.duration(Number(note.begin), 'seconds')
-          .format(this.durationFormat, {trim: false});
-
-        const end = moment.duration(Number(note.end), 'seconds')
-          .format(this.durationFormat, {trim: false});
-
-
-        let segmentClass = '';
-        if (this.isPlaying() &&
-          (this.playbackSeconds >= note.begin) &&
-          (this.playbackSeconds <= note.end)) {
-          segmentClass = 'current';
-        }
-
-        return h(`div.row.${segmentClass}`,
-          [
-            h('span.annotation.id', [
-              note.id,
-            ]),
-            h('span.annotation.text', [
-              note.lines,
-            ]),
-            h('span.annotation.start', [
-              start,
-            ]),
-            h('span.annotation.end', [
-              end,
-            ]),
-          ],
-        );
-      })
-    );
-
-    return h('div.annotations',
-      [
-        boxesWrapper,
-        text,
-      ],
     );
   }
 
