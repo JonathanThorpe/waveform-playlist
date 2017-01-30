@@ -119,19 +119,23 @@ export default class {
               style: `position: absolute; height: 30px; width: ${width}px; left: ${left}px`,
               'data-id': note.id,
             },
-            onclick: (e) => {
-              if (this.isContinuousPlay) {
-                this.playlist.ee.emit('play', this.annotations[i].start);
-              } else {
-                this.playlist.ee.emit('play', this.annotations[i].start, this.annotations[i].end);
-              }
-            },
           },
           [
             this.renderResizeLeft(note),
-            h('span.id', [
-              note.id,
-            ]),
+            h('span.id',
+              {
+                onclick: (e) => {
+                  if (this.isContinuousPlay) {
+                    this.playlist.ee.emit('play', this.annotations[i].start);
+                  } else {
+                    this.playlist.ee.emit('play', this.annotations[i].start, this.annotations[i].end);
+                  }
+                },
+              },
+              [
+                note.id,
+              ]
+            ),
             this.renderResizeRight(note),
           ],
         );
