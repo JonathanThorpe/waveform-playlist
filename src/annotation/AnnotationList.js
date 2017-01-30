@@ -11,10 +11,16 @@ import ShiftInteraction from '../interaction/ShiftInteraction';
 export default class {
   constructor(playlist, annotations, ee = EventEmitter()) {
     this.playlist = playlist;
-    this.annotations = annotations.map((a) => {
+    this.annotations = annotations.map((a, i) => {
       let note = aeneas(a);
-      note.leftShift = new ShiftInteraction(playlist, ee, note, {direction: 'left'});
-      note.rightShift = new ShiftInteraction(playlist, ee, note, {direction: 'right'});
+      note.leftShift = new ShiftInteraction(playlist, ee, note, {
+        direction: 'left',
+        index: i,
+      });
+      note.rightShift = new ShiftInteraction(playlist, ee, note, {
+        direction: 'right',
+        index: i,
+      });
       
       return note;
     });
@@ -24,27 +30,24 @@ export default class {
 
   setupEE(ee) {
     ee.on('shift', (deltaTime, note, data) => {
-      //console.log(deltaTime);
-      //console.log(note);
-      //console.log(data);
+      const annotationIndex = data.index;
+      const annotations = this.annotations;
 
       // resizing to the left
       if (data.direction === 'left') {
         note.start += deltaTime;
         
-        // if (annotationIndex && (annotations[annotationIndex - 1].end > begin)) {
-        //   const leftNeighbour = annotations[annotationIndex - 1];
-        //   annotations[annotationIndex - 1] = Object.assign({}, leftNeighbour, {end: begin});
-        // }
+        if (annotationIndex && (annotations[annotationIndex - 1].end > note.start)) {
+          annotations[annotationIndex - 1].end = note.start;
+        }
       }
       // resizing to the right
       else {
         note.end += deltaTime;
         
-        // if (annotationIndex < (annotations.length - 1) && (annotations[annotationIndex + 1].begin < end)) {
-        //   const rightNeighbour = annotations[annotationIndex + 1];
-        //   annotations[annotationIndex + 1] = Object.assign({}, rightNeighbour, {begin: end});
-        // }
+        if (annotationIndex < (annotations.length - 1) && (annotations[annotationIndex + 1].start < note.end)) {
+          annotations[annotationIndex + 1].start = note.end;
+        }
       }
 
       this.playlist.drawRequest();
@@ -155,10 +158,10 @@ export default class {
         if (this.playlist.isPlaying() &&
           (this.playlist.playbackSeconds >= note.start) &&
           (this.playlist.playbackSeconds <= note.end)) {
-          segmentClass = 'current';
+          segmentClass = '.current';
         }
 
-        return h(`div.row.${segmentClass}`,
+        return h(`div.row${segmentClass}`,
           [
             h('span.annotation.id', [
               note.id,

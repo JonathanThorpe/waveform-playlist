@@ -28,7 +28,7 @@ export default class {
     this.active = true;
     this.el = e.target;
     this.prevX = e.clientX;
-    //e.dataTransfer.setData('text/plain', '');
+
     e.dataTransfer.dropEffect = 'move';
     e.dataTransfer.effectAllowed = 'move';
   }
