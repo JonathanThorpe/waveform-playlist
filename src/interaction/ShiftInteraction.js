@@ -7,6 +7,13 @@ export default class {
     this.obj = obj;
     this.data = data;
     this.active = false;
+
+    this.ondragover = (e) => {
+      if (this.active) {
+        e.preventDefault();
+        this.emitShift(e.clientX);
+      }
+    };
   }
 
   emitShift(x) {
@@ -22,8 +29,7 @@ export default class {
 
   complete() {
     this.active = false;
-
-    document.ondragover = null;
+    document.removeEventListener('dragover', this.ondragover);
   }
 
   dragstart(e) {
@@ -31,17 +37,10 @@ export default class {
     this.el = e.target;
     this.prevX = e.clientX;
 
-    e.dataTransfer.setData('text/plain', '');
-
     e.dataTransfer.dropEffect = 'move';
     e.dataTransfer.effectAllowed = 'move';
-
-    document.ondragover = (e) => {
-      if (this.active) {
-        e.preventDefault();
-        this.emitShift(e.clientX);
-      }
-    };
+    e.dataTransfer.setData('text/plain', '');
+    document.addEventListener('dragover', this.ondragover);
   }
 
   dragend(e) {

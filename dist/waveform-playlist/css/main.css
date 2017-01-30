@@ -100,6 +100,8 @@
       background: #ccc; }
     .playlist .controls input[type=range]:focus::-moz-range-track {
       background: #ccc; }
+  .playlist .annotations .annotations-boxes {
+    text-align: center; }
   .playlist .annotations .annotation-box {
     border: 2px dashed grey;
     padding: 0 10px; }
