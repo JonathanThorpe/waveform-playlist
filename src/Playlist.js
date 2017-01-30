@@ -42,7 +42,7 @@ export default class {
     this.fadeType = 'logarithmic';
     this.masterGain = 1;
     this.annotations = [];
-    this.durationFormat = 'h:mm:ss.SSS';
+    this.durationFormat = 'h:mm:ss.S';
     this.isAutomaticScroll = false;
   }
 

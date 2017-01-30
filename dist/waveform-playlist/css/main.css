@@ -116,7 +116,10 @@
   .playlist .annotations .annotations-text {
     font-size: 19px;
     font-weight: 300;
-    margin-top: 1em; }
+    margin-top: 1em;
+    height: 160px;
+    overflow-x: hidden;
+    overflow-y: auto; }
   .playlist .annotations .current {
     background-color: #EBF4F6; }
 

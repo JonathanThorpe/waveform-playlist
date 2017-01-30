@@ -7,6 +7,7 @@ import Annotation from './Annotation';
 import aeneas from './builder/aeneas';
 import { pixelsToSeconds, secondsToPixels } from '../utils/conversions';
 import ShiftInteraction from '../interaction/ShiftInteraction';
+import ScrollTopHook from './render/ScrollTopHook';
 
 export default class {
   constructor(playlist, annotations, ee = EventEmitter()) {
@@ -154,6 +155,9 @@ export default class {
     );
 
     const text = h('div.annotations-text',
+      {
+        hook: new ScrollTopHook(),
+      },
       this.annotations.map((note) => {
         const start = moment.duration(note.start, 'seconds')
           .format(this.playlist.durationFormat, {trim: false});
