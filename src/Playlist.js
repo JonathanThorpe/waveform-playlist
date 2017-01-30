@@ -156,6 +156,11 @@ export default class {
   setUpEventEmitter() {
     const ee = this.ee;
 
+    ee.on('durationformat', (format) => {
+      this.durationFormat = format;
+      this.drawRequest();
+    });
+
     ee.on('select', (start, end, track) => {
       if (this.isPlaying()) {
         this.lastSeeked = start;

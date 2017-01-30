@@ -9,7 +9,7 @@ var $audioStart = $container.find('.audio-start');
 var $audioEnd = $container.find('.audio-end');
 var $time = $container.find('.audio-pos');
 
-var format = "thousandths";
+var format = "h:mm:ss.S";
 var startTime = 0;
 var endTime = 0;
 var audioPos = 0;
@@ -28,6 +28,7 @@ function toggleActive(node) {
 
 function cueFormatters(format) {
 
+  // TODO should just use moment-format-duration lib.
   function clockFormat(seconds, decimals) {
     var hours,
         minutes,
@@ -45,22 +46,16 @@ function cueFormatters(format) {
   }
 
   var formats = {
-    "seconds": function (seconds) {
+    "s": function (seconds) {
         return seconds.toFixed(0);
     },
-    "thousandths": function (seconds) {
+    "s.S": function (seconds) {
         return seconds.toFixed(3);
     },
-    "hh:mm:ss": function (seconds) {
+    "h:mm:ss": function (seconds) {
         return clockFormat(seconds, 0);   
     },
-    "hh:mm:ss.u": function (seconds) {
-        return clockFormat(seconds, 1);   
-    },
-    "hh:mm:ss.uu": function (seconds) {
-        return clockFormat(seconds, 2);   
-    },
-    "hh:mm:ss.uuu": function (seconds) {
+    "h:mm:ss.S": function (seconds) {
         return clockFormat(seconds, 3);   
     }
   };
@@ -244,6 +239,7 @@ $container.on("drop", ".track-drop", function(e) {
 
 $container.on("change", ".time-format", function(e) {
   format = $timeFormat.val();
+  ee.emit("durationformat", format);
 
   updateSelect(startTime, endTime);
   updateTime(audioPos);
