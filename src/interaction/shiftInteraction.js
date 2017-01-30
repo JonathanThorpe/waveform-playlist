@@ -1,22 +1,23 @@
-import { pixelsToSeconds } from './utils/conversions';
+import { pixelsToSeconds } from '../utils/conversions';
 
 export default class {
-  constructor(ee, obj=null) {
+  constructor(playlist, ee, obj = null, data = {}) {
+    this.playlist = playlist;
     this.ee = ee;
     this.obj = obj;
+    this.data = data;
     this.active = false;
-  }
-
-  setup(samplesPerPixel, sampleRate) {
-    this.samplesPerPixel = samplesPerPixel;
-    this.sampleRate = sampleRate;
   }
 
   emitShift(x) {
     const deltaX = x - this.prevX;
-    const deltaTime = pixelsToSeconds(deltaX, this.samplesPerPixel, this.sampleRate);
-    this.prevX = x;
-    this.ee.emit('shift', deltaTime, this.obj);
+
+    // emit shift event if not 0
+    if (deltaX) {
+      const deltaTime = pixelsToSeconds(deltaX, this.playlist.samplesPerPixel, this.playlist.sampleRate);
+      this.prevX = x;
+      this.ee.emit('shift', deltaTime, this.obj, this.data);
+    }
   }
 
   complete(x) {

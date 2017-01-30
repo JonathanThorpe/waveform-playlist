@@ -12,13 +12,13 @@
 
 import Annotation from '../Annotation';
 
-export default function(aeneas) {
-  const annotation = new Annotation();
+export default function(aeneas, ee) {
+  const annotation = new Annotation(ee);
   annotation.id = aeneas.id;
   annotation.start = Number(aeneas.begin);
   annotation.end = Number(aeneas.end);
   annotation.lines = aeneas.lines;
-  annotation.lang = annotation.language;
+  annotation.lang = aeneas.language;
 
   return annotation;
 }

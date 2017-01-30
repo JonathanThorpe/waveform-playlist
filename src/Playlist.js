@@ -142,8 +142,7 @@ export default class {
   }
 
   setAnnotations(annotations) {
-    this.annotations = annotations;
-    this.annotationList = new AnnotationList(this);
+    this.annotationList = new AnnotationList(this, annotations);
   }
 
   setEventEmitter(ee) {

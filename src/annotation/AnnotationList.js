@@ -6,15 +6,77 @@ import EventEmitter from 'event-emitter';
 import Annotation from './Annotation';
 import aeneas from './builder/aeneas';
 import { pixelsToSeconds, secondsToPixels } from '../utils/conversions';
+import ShiftInteraction from '../interaction/ShiftInteraction';
 
 export default class {
-  constructor(playlist, ee = EventEmitter()) {
+  constructor(playlist, annotations, ee = EventEmitter()) {
     this.playlist = playlist;
-    this.annotations = playlist.annotations.map((a) => {
-      return aeneas(a);
+    this.annotations = annotations.map((a) => {
+      let note = aeneas(a);
+      note.leftShift = new ShiftInteraction(playlist, ee, note, {direction: 'left'});
+      note.rightShift = new ShiftInteraction(playlist, ee, note, {direction: 'right'});
+      
+      return note;
     });
-    this.ee = ee;
+    this.ee = this.setupEE(ee);
     this.isContinuousPlay = false;
+  }
+
+  setupEE(ee) {
+    ee.on('shift', (deltaTime, note, data) => {
+      console.log(deltaTime);
+      console.log(note);
+      console.log(data);
+
+      // resizing to the left
+      if (data.direction === 'left') {
+        note.start += deltaTime;
+        
+        // if (annotationIndex && (annotations[annotationIndex - 1].end > begin)) {
+        //   const leftNeighbour = annotations[annotationIndex - 1];
+        //   annotations[annotationIndex - 1] = Object.assign({}, leftNeighbour, {end: begin});
+        // }
+      }
+      // resizing to the right
+      else {
+        note.end += deltaTime;
+        
+        // if (annotationIndex < (annotations.length - 1) && (annotations[annotationIndex + 1].begin < end)) {
+        //   const rightNeighbour = annotations[annotationIndex + 1];
+        //   annotations[annotationIndex + 1] = Object.assign({}, rightNeighbour, {begin: end});
+        // }
+      }
+
+      this.playlist.drawRequest();
+    });
+
+    return ee;
+  }
+
+  renderResizeLeft(note) {
+    const events = ShiftInteraction.getEvents();
+    let config = {attributes: {
+      style: 'position: absolute; height: 30px; width: 10px; top: 0; left: -2px',
+    }};
+
+    events.forEach((event) => {
+      config[`on${event}`] = note.leftShift[event].bind(note.leftShift);
+    });
+
+    return h('div.resize-handle.resize-w', config);
+  }
+
+  renderResizeRight(note) {
+    const events = ShiftInteraction.getEvents();
+    let config = {attributes: {
+      style: 'position: absolute; height: 30px; width: 10px; top: 0; right: -2px',
+    }};
+
+    events.forEach((event) => {
+      config[`on${event}`] = note.rightShift[event].bind(note.rightShift);
+    });
+
+    return h('div.resize-handle.resize-e', config);
   }
 
   render() {
@@ -53,15 +115,11 @@ export default class {
             },
           },
           [
-            h('div.resize-handle.resize-w', {attributes: {
-              style: 'position: absolute; height: 30px; width: 10px; top: 0; left: -2px',
-            }}),
+            this.renderResizeLeft(note),
             h('span.id', [
               note.id,
             ]),
-            h('div.resize-handle.resize-e', {attributes: {
-              style: 'position: absolute; height: 30px; width: 10px; top: 0; right: -2px',
-            }}),
+            this.renderResizeRight(note),
           ],
         );
       })
@@ -81,10 +139,10 @@ export default class {
     const text = h('div.annotations-text',
       this.annotations.map((note) => {
         const start = moment.duration(note.start, 'seconds')
-          .format(this.durationFormat, {trim: false});
+          .format(this.playlist.durationFormat, {trim: false});
 
         const end = moment.duration(note.end, 'seconds')
-          .format(this.durationFormat, {trim: false});
+          .format(this.playlist.durationFormat, {trim: false});
 
 
         let segmentClass = '';
