@@ -62,6 +62,10 @@ export default class {
       this.playlist.drawRequest();
     });
 
+    ee.on('continuousplay', (val) => {
+      this.isContinuousPlay = val;
+    });
+
     return ee;
   }
 

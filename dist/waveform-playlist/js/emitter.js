@@ -249,8 +249,12 @@ $container.on("change", ".time-format", function(e) {
   updateTime(audioPos);
 });
 
-$container.on("input change", ".master-gain", function(node){
-  ee.emit("mastervolumechange", node.target.value);
+$container.on("input change", ".master-gain", function(e){
+  ee.emit("mastervolumechange", e.target.value);
+});
+
+$container.on("change", ".continuous-play", function(e){
+  ee.emit("continuousplay", $(e.target).is(':checked'));
 });
 
 function displaySoundStatus(status) {
