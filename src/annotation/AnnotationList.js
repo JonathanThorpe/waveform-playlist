@@ -24,9 +24,9 @@ export default class {
 
   setupEE(ee) {
     ee.on('shift', (deltaTime, note, data) => {
-      console.log(deltaTime);
-      console.log(note);
-      console.log(data);
+      //console.log(deltaTime);
+      //console.log(note);
+      //console.log(data);
 
       // resizing to the left
       if (data.direction === 'left') {
@@ -57,6 +57,7 @@ export default class {
     const events = ShiftInteraction.getEvents();
     let config = {attributes: {
       style: 'position: absolute; height: 30px; width: 10px; top: 0; left: -2px',
+      draggable: true,
     }};
 
     events.forEach((event) => {
@@ -70,6 +71,7 @@ export default class {
     const events = ShiftInteraction.getEvents();
     let config = {attributes: {
       style: 'position: absolute; height: 30px; width: 10px; top: 0; right: -2px',
+      draggable: true,
     }};
 
     events.forEach((event) => {
@@ -84,6 +86,10 @@ export default class {
       {
         attributes: {
           style: `height: 30px;`,
+        },
+        ondragover: (e) => {
+          // http://stackoverflow.com/questions/36308460/why-is-clientx-reset-to-0-on-last-drag-event
+          e.preventDefault();
         },
       },
       this.annotations.map((note, i) => {

@@ -20,37 +20,30 @@ export default class {
     }
   }
 
-  complete(x) {
-    this.emitShift(x);
+  complete() {
     this.active = false;
   }
 
-  mousedown(e) {
-    e.preventDefault();
-
+  dragstart(e) {
     this.active = true;
     this.el = e.target;
-    this.prevX = e.offsetX;
+    this.prevX = e.clientX;
+    //e.dataTransfer.setData('text/plain', '');
+    e.dataTransfer.dropEffect = 'move';
+    e.dataTransfer.effectAllowed = 'move';
   }
 
-  mousemove(e) {
+  drag(e) {
     if (this.active) {
       e.preventDefault();
-      this.emitShift(e.offsetX);
+      this.emitShift(e.clientX);
     }
   }
 
-  mouseup(e) {
+  dragend(e) {
     if (this.active) {
       e.preventDefault();
-      this.complete(e.offsetX);
-    }
-  }
-
-  mouseleave(e) {
-    if (this.active) {
-      e.preventDefault();
-      this.complete(e.offsetX);
+      this.complete();
     }
   }
 
@@ -59,6 +52,6 @@ export default class {
   }
 
   static getEvents() {
-    return ['mousedown', 'mousemove', 'mouseup', 'mouseleave'];
+    return ['dragstart', 'drag', 'dragend'];
   }
 }
