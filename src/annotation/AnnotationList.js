@@ -36,6 +36,10 @@ export default class {
       // resizing to the left
       if (data.direction === 'left') {
         note.start += deltaTime;
+
+        if (note.start < 0) {
+          note.start = 0;
+        }
         
         if (annotationIndex && (annotations[annotationIndex - 1].end > note.start)) {
           annotations[annotationIndex - 1].end = note.start;
@@ -44,6 +48,10 @@ export default class {
       // resizing to the right
       else {
         note.end += deltaTime;
+
+        if (note.end > this.playlist.duration) {
+          note.end = this.playlist.duration;
+        }
         
         if (annotationIndex < (annotations.length - 1) && (annotations[annotationIndex + 1].start < note.end)) {
           annotations[annotationIndex + 1].start = note.end;
@@ -89,10 +97,6 @@ export default class {
       {
         attributes: {
           style: `height: 30px;`,
-        },
-        ondragover: (e) => {
-          // http://stackoverflow.com/questions/36308460/why-is-clientx-reset-to-0-on-last-drag-event
-          e.preventDefault();
         },
       },
       this.annotations.map((note, i) => {

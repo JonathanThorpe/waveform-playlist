@@ -22,6 +22,8 @@ export default class {
 
   complete() {
     this.active = false;
+
+    document.ondragover = null;
   }
 
   dragstart(e) {
@@ -29,15 +31,17 @@ export default class {
     this.el = e.target;
     this.prevX = e.clientX;
 
+    e.dataTransfer.setData('text/plain', '');
+
     e.dataTransfer.dropEffect = 'move';
     e.dataTransfer.effectAllowed = 'move';
-  }
 
-  drag(e) {
-    if (this.active) {
-      e.preventDefault();
-      this.emitShift(e.clientX);
-    }
+    document.ondragover = (e) => {
+      if (this.active) {
+        e.preventDefault();
+        this.emitShift(e.clientX);
+      }
+    };
   }
 
   dragend(e) {
@@ -52,6 +56,6 @@ export default class {
   }
 
   static getEvents() {
-    return ['dragstart', 'drag', 'dragend'];
+    return ['dragstart', 'dragend'];
   }
 }
