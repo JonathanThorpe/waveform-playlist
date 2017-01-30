@@ -1,9 +1,8 @@
 import { pixelsToSeconds } from '../utils/conversions';
 
 export default class {
-  constructor(playlist, ee, obj = null, data = {}) {
+  constructor(playlist, obj = null, data = {}) {
     this.playlist = playlist;
-    this.ee = ee;
     this.obj = obj;
     this.data = data;
     this.active = false;
@@ -11,19 +10,19 @@ export default class {
     this.ondragover = (e) => {
       if (this.active) {
         e.preventDefault();
-        this.emitShift(e.clientX);
+        this.emitDrag(e.clientX);
       }
     };
   }
 
-  emitShift(x) {
+  emitDrag(x) {
     const deltaX = x - this.prevX;
 
     // emit shift event if not 0
     if (deltaX) {
       const deltaTime = pixelsToSeconds(deltaX, this.playlist.samplesPerPixel, this.playlist.sampleRate);
       this.prevX = x;
-      this.ee.emit('shift', deltaTime, this.obj, this.data);
+      this.playlist.ee.emit('dragged', deltaTime, this.obj, this.data);
     }
   }
 

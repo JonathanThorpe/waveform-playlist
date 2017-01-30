@@ -6,31 +6,31 @@ import EventEmitter from 'event-emitter';
 import Annotation from './Annotation';
 import aeneas from './builder/aeneas';
 import { pixelsToSeconds, secondsToPixels } from '../utils/conversions';
-import ShiftInteraction from '../interaction/ShiftInteraction';
+import DragInteraction from '../interaction/DragInteraction';
 import ScrollTopHook from './render/ScrollTopHook';
 
 export default class {
-  constructor(playlist, annotations, ee = EventEmitter()) {
+  constructor(playlist, annotations) {
     this.playlist = playlist;
     this.annotations = annotations.map((a, i) => {
       let note = aeneas(a);
-      note.leftShift = new ShiftInteraction(playlist, ee, note, {
+      note.leftShift = new DragInteraction(playlist, note, {
         direction: 'left',
         index: i,
       });
-      note.rightShift = new ShiftInteraction(playlist, ee, note, {
+      note.rightShift = new DragInteraction(playlist, note, {
         direction: 'right',
         index: i,
       });
       
       return note;
     });
-    this.ee = this.setupEE(ee);
+    this.setupEE(playlist.ee);
     this.isContinuousPlay = false;
   }
 
   setupEE(ee) {
-    ee.on('shift', (deltaTime, note, data) => {
+    ee.on('dragged', (deltaTime, note, data) => {
       const annotationIndex = data.index;
       const annotations = this.annotations;
 
@@ -66,7 +66,7 @@ export default class {
   }
 
   renderResizeLeft(note) {
-    const events = ShiftInteraction.getEvents();
+    const events = DragInteraction.getEvents();
     let config = {attributes: {
       style: 'position: absolute; height: 30px; width: 10px; top: 0; left: -2px',
       draggable: true,
@@ -80,7 +80,7 @@ export default class {
   }
 
   renderResizeRight(note) {
-    const events = ShiftInteraction.getEvents();
+    const events = DragInteraction.getEvents();
     let config = {attributes: {
       style: 'position: absolute; height: 30px; width: 10px; top: 0; right: -2px',
       draggable: true,
