@@ -169,14 +169,7 @@
       .resize-handle {
         background: grey;
         opacity: 0.3;
-      }
-
-      .resize-w {
-        cursor: w-resize;
-      }
-
-      .resize-e {
-        cursor: e-resize;
+        cursor: ew-resize;
       }
 
       .id {

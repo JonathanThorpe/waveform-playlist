@@ -107,11 +107,8 @@
     padding: 0 10px; }
     .playlist .annotations .annotation-box .resize-handle {
       background: grey;
-      opacity: 0.3; }
-    .playlist .annotations .annotation-box .resize-w {
-      cursor: w-resize; }
-    .playlist .annotations .annotation-box .resize-e {
-      cursor: e-resize; }
+      opacity: 0.3;
+      cursor: ew-resize; }
     .playlist .annotations .annotation-box .id {
       cursor: pointer; }
   .playlist .annotations .annotation {
